@@ -1,0 +1,230 @@
+<template>
+    <div class="contain">
+        <vxe-toolbar ref="xToolbar" custom>
+            <template #buttons>
+                <vxe-button icon="vxe-icon--plus" status="perfect" content="新增"></vxe-button>
+                <vxe-button icon="vxe-icon--minus" status="perfect" content="删除"></vxe-button>
+                <vxe-button icon="fa fa-save" status="perfect" content="保存"></vxe-button>
+            </template>
+            <template #tools>
+                <vxe-button type="text" icon="vxe-icon--question" class="tool-btn"></vxe-button>
+                <vxe-switch open-icon="vxe-icon--zoomin" close-icon="vxe-icon--zoomout" v-model="isFullScreen"></vxe-switch>
+                <vxe-button type="text" icon="vxe-icon--funnel" class="tool-btn" @click="funnelEvent"></vxe-button>
+            </template>
+        </vxe-toolbar>
+        <vxe-table ref="mytable" resizable stripe show-overflow :border="tableBorder" align="center" :loading="loading" :height="tableHeight"
+            highlight-current-row highlight-hover-row :data="tableData" show-footer
+            :footer-method="footerMethod" :tooltip-config="{showAll: true, enterable: true, contentMethod: showTooltipMethod}">
+            <vxe-column type="seq" width="5%" fixed="left"></vxe-column>
+            <vxe-column field="account" title="account" width="14%" :filters="conditions('account')"></vxe-column>
+            <vxe-column field="product" title="product" width="16%" :filters="conditions('product')"></vxe-column>
+            <vxe-column field="SKU" title="SKU" width="10%" :filters="conditions('SKU')"></vxe-column>
+            <vxe-column field="ASIN" title="ASIN" width="10%" :filters="conditions('ASIN')"></vxe-column>
+            <vxe-column field="seller" title="seller" width="10%" :filters="conditions('seller')"></vxe-column>
+            <vxe-column field="developer" title="developer" width="9%" :filters="conditions('developer')"></vxe-column>
+            <vxe-colgroup field="all_sum" title="all_sum">
+                <vxe-column field="sale_amount" title="sale_amount" width="15%" sortable :filters="conditions('sale_amount')"></vxe-column>
+                <vxe-column field="order_amount" title="order_amount" width="15%" sortable :filters="conditions('order_amount')"></vxe-column>
+            </vxe-colgroup>
+        </vxe-table>
+        <vxe-pager background :current-page.sync="page.currentPage" :page-size.sync="page.pageSize"
+            :page-sizes="page.pageSizes" :total="page.totalResult" @page-change="handlePageChange"
+            :layouts="['PrevJump', 'PrevPage', 'JumpNumber', 'NextPage', 'NextJump', 'Sizes', 'FullJump', 'Total']">
+        </vxe-pager>
+    </div>
+</template>
+<script>
+    export default {
+        data() {
+            return {
+                loading: true,
+                tableData: [],
+                tableHeight: 670,
+                tableBorder: 'false',
+                isFullScreen: false,
+                filters: [],
+                page: {
+                    currentPage: 1,
+                    pageSize: 10,
+                    pageSizes: [10, 20, 50, 100, 150],
+                    totalResult: 30
+                },
+                scrollHeight: 0,
+                scrollWidth: 0
+            };
+        },
+        watch: {
+            isFullScreen(newV,oldV){
+                this.$nextTick(()=>{
+                    let el = document.querySelector('.contain');
+                    let tableData = this.tableData;
+                    this.tableData = [];
+                    // if(newV) el.webkitRequestFullScreen() || el.mozRequestFullScreen() || el.msRequestFullScreen() || el.requestFullScreen()
+                    // else el.webkitExitFullscreen() || el.mozExitFullscreen() || el.msExitFullscreen() || el.exitFullscreen()
+                    console.log( el)
+                    if(newV){
+                        el.setAttribute('class',el.getAttribute('class')+' table-fullscreen');
+                    }else{
+                        el.setAttribute('class',el.getAttribute('class').split(' ').slice(0,-1).join(' '));
+                    }
+                    this.tableData = tableData;
+                })
+            }
+        },
+        computed: {},
+        created() {
+            this.tableData = new Array(30).fill(0).map((e, i) => {
+                return {
+                    id: 1000 + i,
+                    account: 'admin' + i,
+                    product: 'product' + i,
+                    SKU: 'SKU' + i,
+                    ASIN: 'ASIN' + i,
+                    seller: 'seller' + i,
+                    developer: 'developer' + i,
+                    sale_amount: (Math.random() * 1000).toFixed(2),
+                    order_amount: (Math.random() * 100).toFixed(0),
+                }
+            })
+            this.loading = false;
+            this.$nextTick(function () {
+                this.$refs.mytable.connect(this.$refs.xToolbar);
+            })
+        },
+        mounted() { 
+            this.$nextTick(function () {
+                setTimeout(()=>{this.autoRoll()},7000);
+            })
+        },
+        methods: {
+            initRollData(){
+                this.scrollHeight = this.$refs.mytable.getScroll().scrollTop;
+                this.scrollWidth = this.$refs.mytable.getScroll().scrollLeft;
+            },
+            // 自动滚动
+            autoRoll() {
+                const rowHeight = document.querySelector('.vxe-body--row').offsetHeight; //50
+                const pageHeight = rowHeight * this.page.pageSize;
+                this.initRollData();
+                const lastPageTop = pageHeight * (Math.ceil(this.page.totalResult / this.page.pageSize) - 1);
+
+
+                let lineScroll = ()=> {
+                    this.initRollData();
+                    if((this.scrollHeight).toFixed(0) == lastPageTop)setTimeout(()=>{requestAnimationFrame(lineScroll);},7000);
+                    // Do whatever
+                    this.scrollHeight = Math.ceil(this.scrollHeight / rowHeight) < this.page.totalResult-10 ? (Math.floor(this.scrollHeight / rowHeight) + 1) * rowHeight : 0;
+                    //scrollToRow(row, fieldOrColumn)
+                    document.querySelector('.vxe-table--body-wrapper').scrollTo(this.scrollWidth,this.scrollHeight);
+                    if((this.scrollHeight).toFixed(0) % pageHeight == 0)setTimeout(()=>{requestAnimationFrame(lineScroll);},7000);
+                    else setTimeout(()=>{requestAnimationFrame(lineScroll);},1000);
+                }
+
+                let pageScroll = ()=> {
+                    this.initRollData();
+                    // Do whatever
+                    this.scrollHeight = Math.ceil(this.scrollHeight / pageHeight) < 2 ? (Math.floor(this.scrollHeight / pageHeight) + 1) * pageHeight : 0;
+                    document.querySelector('.vxe-table--body-wrapper').scrollTo(this.scrollWidth,this.scrollHeight);
+                    if((this.scrollHeight).toFixed(0) % pageHeight == 0)setTimeout(()=>{requestAnimationFrame(pageScroll);},5000)
+                    else requestAnimationFrame(pageScroll);
+                }
+
+                // requestAnimationFrame(lineScroll);
+                
+                requestAnimationFrame(pageScroll);
+            },
+            showTooltipMethod({ type, column, row, items, _columnIndex }) {
+                const { property } = column;
+                // 重写默认的提示内容
+                    if (type === 'header') {
+                        return column.title ? '自定义标题提示内容：' + column.title : ''
+                    } else if (type === 'footer') {
+                        return items[_columnIndex] ? '自定义表尾提示内容，\n并且自定义换行：\n' + items[_columnIndex] : ''
+                    }
+                    return row[property] ? '自定义提示内容：' + row[property] : ''
+                // 其余的单元格使用默认行为
+                return null
+            },
+            conditions(field) {
+                return [...new Set(this.tableData.map(e=>e[field]))].map(e=>{
+                    return {
+                        label: e,
+                        value: e
+                    }
+                })
+            },
+            footerMethod({ columns }) {
+                const footerData = [
+                    columns.map((column, columnIndex) => {
+                        if (columnIndex === 0) {
+                            return '合计'
+                        }
+                        if (['sale_amount'].includes(column.property)) {
+                            return this.tableData.map(e=>{
+                                return (e.sale_amount*1)
+                            }).reduce((total, curr)=>{
+                                // console.log((total || 0) *1 ,(curr || 0) *1,(total || 0) *1 + (curr || 0) *1)
+                                return ((total || 0) *1 + (curr || 0) *1).toFixed(2);
+                            })
+                        }
+                        if (['order_amount'].includes(column.property)) {
+                            return this.tableData.map(e=>{
+                                return e.order_amount
+                            }).reduce((total, curr)=>{
+                                // console.log((total || 0) *1 ,(curr || 0) *1,(total || 0) *1 + (curr || 0) *1)
+                                return (total || 0) *1 + (curr || 0) *1;
+                            })
+                        }
+                        return null
+                    })
+                ]
+                return footerData
+            },
+            funnelEvent() {
+                this.$message({
+                    duration: 3000,
+                    message: '点击事件'
+                })
+            },
+            handlePageChange({ type, currentPage, pageSize }) {
+                console.log(type)  //current ,size
+            }
+        },
+    };
+</script>
+<style>
+    .table-fullscreen{
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 999;
+        background: #fff;
+    }
+    .vxe-buttons--wrapper {
+        text-align: left;
+    }
+
+    .vxe-body--x-space,
+    .vxe-body--y-space {
+        /* border-color: #ccc; */
+    }
+
+    table,
+    table.vxe-table--header tr th {
+        border: 1px solid #e8eaec;
+    }
+
+    table.vxe-table--body-wrapper{
+        transition: all 1s ease;
+    }
+
+    table.vxe-table--body tr td:first-child {
+        border: 1px solid #e8eaec;
+    }
+
+    table.vxe-table--body tr:nth-child(10n) td {
+        border-bottom: 1px solid #000;
+    }
+</style>

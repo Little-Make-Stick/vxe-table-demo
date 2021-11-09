@@ -11,8 +11,12 @@ const routes = [
     component: Home,
     children:[
       {
-        path: 'swiper-table',
-        component: () => import('../views/swiper/vxeTable-Swiper.vue')
+        path: 'roll-table',
+        component: () => import('../views/Roll/vxeTable-Roll.vue')
+      },
+      {
+        path: 'base-table',
+        component: () => import('../views/Base/vxeTable-Base.vue')
       }
     ]
   },
