@@ -9,16 +9,33 @@
           </template>
           <el-menu-item index="/base-table">Base Table DEMO</el-menu-item>
         </el-submenu>
-        <el-submenu index="1">
+        <el-submenu index="2">
+          <template slot="title">
+            <i class="el-icon-guide"></i>
+            <span slot="title">Base Tree</span>
+          </template>
+          <el-menu-item index="/base-tree">Base Tree DEMO</el-menu-item>
+        </el-submenu>
+        <el-submenu index="3">
           <template slot="title">
             <i class="el-icon-magic-stick"></i>
             <span slot="title">Roll Table</span>
           </template>
           <el-menu-item index="/roll-table">Roll Table DEMO</el-menu-item>
         </el-submenu>
+        <el-submenu index="4">
+          <template slot="title">
+            <i class="el-icon-s-management"></i>
+            <span slot="title">Table Function</span>
+          </template>
+          <el-menu-item index="/function/fullscreen">Fullscreen</el-menu-item>
+          <el-menu-item index="/function/filtercol">Filter Col</el-menu-item>
+          <el-menu-item index="/function/tooltip">Tool Tip</el-menu-item>
+          <el-menu-item index="/function/table-footer">Table Footer</el-menu-item>
+        </el-submenu>
       </el-menu>
 
-      <el-container>
+      <el-container>  
         <el-header style="
             text-align: right;
             font-size: 12px;
