@@ -1,48 +1,82 @@
 <template>
     <div class="contain">
-        <vxe-toolbar ref="xToolbar" custom>
-            <template #buttons>
-                <vxe-button icon="vxe-icon--plus" status="perfect" content="新增"></vxe-button>
-                <vxe-button icon="vxe-icon--minus" status="perfect" content="删除"></vxe-button>
-                <vxe-button icon="fa fa-save" status="perfect" content="保存"></vxe-button>
-            </template>
-            <template #tools>
-                <vxe-button icon="vxe-icon--question" class="tool-btn" circle></vxe-button>
-                <vxe-button icon="vxe-icon--zoomin" class="fullscreen-btn" @click="isFullScreen = !isFullScreen" circle></vxe-button>
-                <!-- <vxe-switch open-icon="vxe-icon--zoomin" close-icon="vxe-icon--zoomout" v-model="isFullScreen">
-                </vxe-switch> -->
-                <vxe-button icon="vxe-icon--funnel" class="tool-btn" @click="funnelEvent" circle></vxe-button>
-            </template>
-        </vxe-toolbar>
-        <vxe-table ref="mytable" resizable stripe show-overflow :border="tableBorder" align="center" :loading="loading"
-            :height="tableHeight" highlight-current-row highlight-hover-row :data="tableData" show-footer
-            :footer-method="footerMethod" :tooltip-config="{showAll: true,enterable: true,contentMethod: showTooltipMethod,}">
-            <vxe-column type="seq" width="5%" fixed="left"></vxe-column>
-            <vxe-column field="account" title="account" width="14%" :filters="conditions('account')"></vxe-column>
-            <vxe-column field="product" title="product" width="16%" :filters="conditions('product')"></vxe-column>
-            <vxe-column field="SKU" title="SKU" width="10%" :filters="conditions('SKU')"></vxe-column>
-            <vxe-column field="ASIN" title="ASIN" width="10%" :filters="conditions('ASIN')"></vxe-column>
-            <vxe-column field="seller" title="seller" width="8%" :filters="conditions('seller')"></vxe-column>
-            <vxe-column field="developer" title="developer" width="7%" :filters="conditions('developer')"></vxe-column>
-            <vxe-colgroup field="all_sum" title="all_sum">
-                <vxe-column field="sale_amount" title="sale_amount" width="15%" sortable
-                    :filters="conditions('sale_amount')"></vxe-column>
-                <vxe-column field="order_amount" title="order_amount" width="15%" sortable
-                    :filters="conditions('order_amount')"></vxe-column>
-            </vxe-colgroup>
-        </vxe-table>
-        <vxe-pager background :current-page.sync="page.currentPage" :page-size.sync="page.pageSize"
-            :page-sizes="page.pageSizes" :total="page.totalResult" @page-change="handlePageChange" :layouts="[
-        'PrevJump',
-        'PrevPage',
-        'JumpNumber',
-        'NextPage',
-        'NextJump',
-        'Sizes',
-        'FullJump',
-        'Total',
-      ]">
-        </vxe-pager>
+        <div class="sale_board">
+            <vxe-toolbar ref="xToolbar" custom>
+                <template #buttons></template>
+                <template #tools>
+                    <vxe-button icon="vxe-icon--zoomin" class="fullscreen-btn"
+                        @click="isSaleBoardFullScreen = !isSaleBoardFullScreen" circle></vxe-button>
+                </template>
+            </vxe-toolbar>
+            <vxe-table ref="xtable" resizable stripe show-overflow :border="tableBorder" align="center"
+                :loading="loading" :height="tableHeight" :data="tableData"
+                show-footer :footer-method="footerMethod"
+                :tooltip-config="{ showAll: true, enterable: true, contentMethod: showTooltipMethod, }">
+                <vxe-column type="seq" title="序号排名" width="15%" fixed="left"></vxe-column>
+                <vxe-column field="account" title="账号" width="20%" :filters="conditions('account')"></vxe-column>
+                <vxe-column field="product" title="产品名" width="20%" :filters="conditions('product')"></vxe-column>
+                <vxe-column field="SKU" title="Seller SKU" width="20%" :filters="conditions('SKU')"></vxe-column>
+                <vxe-column field="ASIN" title="ASIN" width="20%" :filters="conditions('ASIN')"></vxe-column>
+                <vxe-column field="seller" title="销售人员" width="20%" :filters="conditions('seller')"></vxe-column>
+                <vxe-column field="developer" title="开发人员" width="20%" :filters="conditions('developer')">
+                </vxe-column>
+                <vxe-colgroup field="all_sum" title="整体合计">
+                    <vxe-column field="sale_amount" title="销售量" width="20%" sortable
+                        :filters="conditions('sale_amount')"></vxe-column>
+                    <vxe-column field="order_amount" title="订单金额" width="20%" sortable
+                        :filters="conditions('order_amount')"></vxe-column>
+                </vxe-colgroup>
+            </vxe-table>
+        </div>
+        <div class="sale_goal">
+            <vxe-toolbar ref="myToolbar" custom>
+                <template #buttons></template>
+                <template #tools>
+                    <vxe-button icon="vxe-icon--zoomin" class="fullscreen-btn"
+                        @click="isSaleGoalFullScreen = !isSaleGoalFullScreen" circle>
+                    </vxe-button>
+                </template>
+            </vxe-toolbar>
+            <vxe-table ref="mytable" resizable stripe show-overflow :border="tableBorder" show-footer
+                :footer-method="footerMethod" align="center"
+                :loading="loading" :height="tableHeight" :data="tableData"
+                :tooltip-config="{ showAll: true, enterable: true, contentMethod: showTooltipMethod, }">
+                <!-- <vxe-column type="seq" width="60" fixed="left"></vxe-column> -->
+                <vxe-column field="account" title="销售" width="100" :filters="conditions('account')"></vxe-column>
+                <vxe-colgroup field="goal" title="目标">
+                    <vxe-column field="sale_amount" title="销售金额" width="15%" sortable
+                        :filters="conditions('sale_amount')"></vxe-column>
+                    <vxe-column field="order_amount" title="毛利额" width="15%" sortable
+                        :filters="conditions('order_amount')"></vxe-column>
+                    <vxe-column field="order_amount" title="毛利率" width="15%" sortable
+                        :filters="conditions('order_amount')"></vxe-column>
+                </vxe-colgroup>
+                <vxe-colgroup field="goal" title="累计运营数据（时间进度xx%）">
+                    <vxe-column field="sale_amount" title="销售金额（完成进度）" width="15%" sortable
+                        :filters="conditions('sale_amount')"></vxe-column>
+                    <vxe-column field="order_amount" title="毛利额" width="15%" sortable
+                        :filters="conditions('order_amount')"></vxe-column>
+                    <vxe-column field="order_amount" title="毛利率" width="15%" sortable
+                        :filters="conditions('order_amount')"></vxe-column>
+                    <vxe-column field="order_amount" title="毛利率差异" width="15%" sortable
+                        :filters="conditions('order_amount')"></vxe-column>
+                </vxe-colgroup>
+                <vxe-colgroup field="goal" title="当天运营数据">
+                    <vxe-column field="sale_amount" title="销售金额" width="15%" sortable
+                        :filters="conditions('sale_amount')"></vxe-column>
+                    <vxe-column field="order_amount" title="毛利额" width="15%" sortable
+                        :filters="conditions('order_amount')"></vxe-column>
+                    <vxe-column field="order_amount" title="毛利率" width="15%" sortable
+                        :filters="conditions('order_amount')"></vxe-column>
+                    <vxe-column field="order_amount" title="毛利率差异" width="15%" sortable
+                        :filters="conditions('order_amount')"></vxe-column>
+                </vxe-colgroup>
+            </vxe-table>
+            <vxe-pager background :current-page.sync="page.currentPage" :page-size.sync="page.pageSize"
+                :page-sizes="page.pageSizes" :total="page.totalResult" @page-change="handlePageChange" 
+                :layouts="['PrevJump','PrevPage','JumpNumber','NextPage','NextJump','Sizes','FullJump','Total',]">
+            </vxe-pager>
+        </div>
     </div>
 </template>
 <script>
@@ -53,7 +87,8 @@
                 tableData: [],
                 tableHeight: 670,
                 tableBorder: "false",
-                isFullScreen: false,
+                isSaleBoardFullScreen: false,
+                isSaleGoalFullScreen: false,
                 filters: [],
                 page: {
                     currentPage: 1,
@@ -67,17 +102,31 @@
             };
         },
         watch: {
-            isFullScreen(newV, oldV) {
+            isSaleBoardFullScreen(newV, oldV) {
                 this.$nextTick(() => {
-                    let el = document.querySelector(".contain");
+                    let el = document.querySelector(".sale_board");
                     if (newV) {
                         this.fullscreen(el);
-                        document.querySelector('.fullscreen-btn i').setAttribute('class','vxe-button--icon vxe-icon--zoomout');
-                        el.setAttribute('class',el.getAttribute('class')+' contain-fullscreen');
-                    }else {
+                        document.querySelector(".fullscreen-btn i").setAttribute("class", "vxe-button--icon vxe-icon--zoomout");
+                        el.setAttribute("class", el.getAttribute("class") + " contain-fullscreen");
+                    } else {
                         this.notFullscreen(document);
-                        document.querySelector('.fullscreen-btn i').setAttribute('class','vxe-button--icon vxe-icon--zoomin');
-                        el.setAttribute('class',el.getAttribute('class').split(' ').slice(0,-1).join(' '));
+                        document.querySelector(".fullscreen-btn i").setAttribute("class", "vxe-button--icon vxe-icon--zoomin");
+                        el.setAttribute("class", el.getAttribute("class").split(" ").slice(0, -1).join(" "));
+                    }
+                });
+            },
+            isSaleGoalFullScreen(newV, oldV) {
+                this.$nextTick(() => {
+                    let el = document.querySelector(".sale_goal");
+                    if (newV) {
+                        this.fullscreen(el);
+                        document.querySelector(".fullscreen-btn i").setAttribute("class", "vxe-button--icon vxe-icon--zoomout");
+                        el.setAttribute("class", el.getAttribute("class") + " contain-fullscreen");
+                    } else {
+                        this.notFullscreen(document);
+                        document.querySelector(".fullscreen-btn i").setAttribute("class", "vxe-button--icon vxe-icon--zoomin");
+                        el.setAttribute("class", el.getAttribute("class").split(" ").slice(0, -1).join(" "));
                     }
                 });
             },
@@ -99,7 +148,8 @@
             });
             this.loading = false;
             this.$nextTick(function () {
-                this.$refs.mytable.connect(this.$refs.xToolbar);
+                this.$refs.mytable.connect(this.$refs.myToolbar);
+                this.$refs.xtable.connect(this.$refs.xToolbar);
             });
         },
         mounted() {
@@ -109,7 +159,7 @@
                 }, 7000);
             });
         },
-        beforeDestory(){
+        beforeDestory() {
             cancelAnimationFrame(this.animateId);
             this.animateId = 0;
         },
@@ -117,7 +167,7 @@
             // 全屏
             fullscreen(el) {
                 if (el.requestFullscreen) {
-                    console.log('full')
+                    console.log("full");
                     el.requestFullscreen();
                 } else if (el.msRequestFullscreen) {
                     el.msRequestFullscreen();
@@ -129,7 +179,7 @@
             },
             // 非全屏
             notFullscreen(el) {
-                console.log('exit')
+                console.log("exit");
                 if (el.exitFullscreen) {
                     el.exitFullscreen();
                 } else if (el.msExitFullscreen) {
@@ -234,7 +284,6 @@
                                     return e.sale_amount * 1;
                                 })
                                 .reduce((total, curr) => {
-                                    // console.log((total || 0) *1 ,(curr || 0) *1,(total || 0) *1 + (curr || 0) *1)
                                     return ((total || 0) * 1 + (curr || 0) * 1).toFixed(2);
                                 });
                         }
@@ -244,7 +293,6 @@
                                     return e.order_amount;
                                 })
                                 .reduce((total, curr) => {
-                                    // console.log((total || 0) *1 ,(curr || 0) *1,(total || 0) *1 + (curr || 0) *1)
                                     return (total || 0) * 1 + (curr || 0) * 1;
                                 });
                         }
@@ -253,21 +301,35 @@
                 ];
                 return footerData;
             },
-            funnelEvent() {
-                this.$message({
-                    duration: 3000,
-                    message: "点击事件",
-                });
-            },
-            handlePageChange({ type, currentPage, pageSize }) {
-                console.log(type); //current ,size
-            },
         },
     };
 </script>
 <style>
+    :root {
+        --dark-table-th-color: #0d2d3c;
+        --dark-table-row1-color: #215a76;
+        --dark-table-row2-color: #79aec8;
+        --font-base-size: 14px;
+        --table-line-color: #e8eaec;
+        --page-line-color: #fff;
+    }
+
+    * {
+        font-size: var(--font-base-size);
+        padding: 0;
+        margin: 0;
+    }
+
     .contain {
         background-color: #fff;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 40% 60%;
+        grid-column-gap: 14px;
+    }
+
+    .contain * {
+        /* width: 50%; */
     }
 
     .contain-fullscreen {
@@ -285,21 +347,41 @@
         /* border-color: #ccc; */
     }
 
+    .sale_board .vxe-table--body-wrapper.body--wrapper {
+        /* overflow-y: hidden ; */
+    }
+
     table,
     table.vxe-table--header tr th {
-        border: 1px solid #e8eaec;
-        background: #fff;
+        /* border: 1px solid var(--table-line-color); */
+        background: var(--dark-table-th-color);
+        color: #fff;
     }
+
+    table.vxe-table--body tr {
+        /* background-color: var(--dark-table-row1-color); */
+        color: #fff;
+    }
+
+    table.vxe-table--body tr.row--stripe {
+        background: var(--dark-table-row1-color) !important;
+    }
+
 
     table.vxe-table--body-wrapper {
         transition: all 1s ease;
     }
 
+    table.vxe-table--body tr td {
+        border: 0px;
+        outline: none;
+    }
+
     table.vxe-table--body tr td:first-child {
-        border: 1px solid #e8eaec;
+        /* border: 1px solid var(--table-line-color); */
     }
 
     table.vxe-table--body tr:nth-child(10n) td {
-        border-bottom: 1px solid #000;
+        border-bottom: 1px solid var(--page-line-color);
     }
 </style>

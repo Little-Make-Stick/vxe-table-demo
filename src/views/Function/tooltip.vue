@@ -41,17 +41,6 @@
                 tableData: [],
                 tableBorder: "false",
                 tableHeight: 660,
-                formData: {
-                    id: 0,
-                    account: "",
-                    product: "",
-                    SKU: "",
-                    ASIN: "",
-                    seller: "",
-                    developer: "",
-                    sale_amount: 0,
-                    order_amount: 0,
-                },
             };
         },
         watch: {},

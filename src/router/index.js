@@ -24,6 +24,10 @@ const routes = [
         component: () => import('../views/Base/vxeTree-Base.vue')
       },
       {
+        path: 'horizontal-tree',
+        component: () => import('../views/Base/vxeTree-h-Base.vue')
+      },
+      {
         path: 'function/fullscreen',
         component: () => import('../views/Function/fullscreen.vue')
       },
@@ -34,6 +38,14 @@ const routes = [
       {
         path: 'function/tooltip',
         component: () => import('../views/Function/tooltip.vue')
+      },
+      {
+        path: 'function/scroll-to-row',
+        component: () => import('../views/Function/scroll-to-row.vue')
+      },
+      {
+        path: 'function/table-edit',
+        component: () => import('../views/Function/table-edit.vue')
       },
       {
         path: 'function/table-footer',

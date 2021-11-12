@@ -4,25 +4,25 @@
         <div class="base-table-contain">
             <vxe-toolbar ref="xToolbar" custom>
                 <template #buttons>
+                    <div class="row_btn" v-for="(index, i) in 31" :key="i">
+                        <vxe-button v-if="index != 1" @click="_scrollTo(index)" circle>{{ index }}</vxe-button>
+                    </div>
                 </template>
-                <template #tools>
-                </template>
+                <template #tools> </template>
             </vxe-toolbar>
             <vxe-table ref="mytable" stripe :border="tableBorder" align="center" :loading="loading"
-                :height="tableHeight" highlight-current-row highlight-hover-row :data="tableData" >
+                :height="tableHeight" highlight-current-row highlight-hover-row :data="tableData">
                 <vxe-column type="seq" width="60" fixed="left"></vxe-column>
-                <vxe-column field="account" title="account" width="140" :filters="conditions('account')"></vxe-column>
-                <vxe-column field="product" title="product" width="240" :filters="conditions('product')"></vxe-column>
-                <vxe-column field="SKU" title="SKU" width="180" :filters="conditions('SKU')"></vxe-column>
-                <vxe-column field="ASIN" title="ASIN" width="140" :filters="conditions('ASIN')"></vxe-column>
-                <vxe-column field="seller" title="seller" width="220" :filters="conditions('seller')"></vxe-column>
-                <vxe-column field="developer" title="developer" width="200" :filters="conditions('developer')">
+                <vxe-column field="account" title="account" width="140"></vxe-column>
+                <vxe-column field="product" title="product" width="240"></vxe-column>
+                <vxe-column field="SKU" title="SKU" width="180"></vxe-column>
+                <vxe-column field="ASIN" title="ASIN" width="140"></vxe-column>
+                <vxe-column field="seller" title="seller" width="220"></vxe-column>
+                <vxe-column field="developer" title="developer" width="200">
                 </vxe-column>
                 <vxe-colgroup field="all_sum" title="all_sum">
-                    <vxe-column field="sale_amount" title="sale_amount" width="240" sortable
-                        :filters="conditions('sale_amount')"></vxe-column>
-                    <vxe-column field="order_amount" title="order_amount" width="240" sortable
-                        :filters="conditions('order_amount')"></vxe-column>
+                    <vxe-column field="sale_amount" title="sale_amount" width="240" sortable></vxe-column>
+                    <vxe-column field="order_amount" title="order_amount" width="240" sortable></vxe-column>
                 </vxe-colgroup>
                 <vxe-column field="edit" title="edit" width="260" fixed="right">
                     <template custom>
@@ -61,19 +61,16 @@
                 };
             });
             this.loading = false;
-            this.$nextTick(()=> {
+            this.$nextTick(() => {
                 this.$refs.mytable.connect(this.$refs.xToolbar);
             });
         },
-        mounted() {},
+        mounted() { },
         methods: {
-            // 定义列筛选得值
-            conditions(field) {
-                return [...new Set(this.tableData.map((e) => e[field]))].map((e) => {
-                    return {
-                        label: e,
-                        value: e,
-                    };
+            _scrollTo(index) {
+                let row = this.$refs.mytable.getRowById("row_"+index);
+                this.$refs.mytable.scrollToRow(row).then((res) => {
+                    console.log(res);
                 });
             }
         },
@@ -92,6 +89,11 @@
 
     .vxe-buttons--wrapper {
         text-align: left;
+        display: flex;
+    }
+
+    .row_btn{
+        margin: 0 5px;
     }
 
     table,

@@ -15,6 +15,7 @@
             <span slot="title">Base Tree</span>
           </template>
           <el-menu-item index="/base-tree">Base Tree DEMO</el-menu-item>
+          <el-menu-item index="/horizontal-tree">Horizontal Tree DEMO</el-menu-item>
         </el-submenu>
         <el-submenu index="3">
           <template slot="title">
@@ -31,6 +32,8 @@
           <el-menu-item index="/function/fullscreen">Fullscreen</el-menu-item>
           <el-menu-item index="/function/filtercol">Filter Col</el-menu-item>
           <el-menu-item index="/function/tooltip">Tool Tip</el-menu-item>
+          <el-menu-item index="/function/scroll-to-row">Sroll To Row</el-menu-item>
+          <el-menu-item index="/function/table-edit">Table Edit</el-menu-item>
           <el-menu-item index="/function/table-footer">Table Footer</el-menu-item>
         </el-submenu>
       </el-menu>

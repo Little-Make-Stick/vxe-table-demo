@@ -3,21 +3,21 @@
         <!-- vxe-grid 得 zoom 可以实现全屏，vxe-table 需要自定义功能 -->
         <div class="base-table-contain">
             <vxe-toolbar ref="xToolbar" custom>
-                <template #buttons>
-                </template>
+                <template #buttons> </template>
                 <template #tools>
-                    <vxe-button icon="vxe-icon--zoomin" class="fullscreen-btn" @click="isFullScreen = !isFullScreen" circle></vxe-button>
+                    <vxe-button icon="vxe-icon--zoomin" class="fullscreen-btn" @click="isFullScreen = !isFullScreen"
+                        circle></vxe-button>
                 </template>
             </vxe-toolbar>
             <vxe-table ref="mytable" stripe :border="tableBorder" align="center" :loading="loading"
-                :height="tableHeight" highlight-current-row highlight-hover-row :data="tableData" >
+                :height="tableHeight" highlight-current-row highlight-hover-row :data="tableData">
                 <vxe-column type="seq" width="60" fixed="left"></vxe-column>
-                <vxe-column field="account" title="account" width="140" ></vxe-column>
-                <vxe-column field="product" title="product" width="240" ></vxe-column>
-                <vxe-column field="SKU" title="SKU" width="180" ></vxe-column>
-                <vxe-column field="ASIN" title="ASIN" width="140" ></vxe-column>
-                <vxe-column field="seller" title="seller" width="220" ></vxe-column>
-                <vxe-column field="developer" title="developer" width="200" >
+                <vxe-column field="account" title="account" width="140"></vxe-column>
+                <vxe-column field="product" title="product" width="240"></vxe-column>
+                <vxe-column field="SKU" title="SKU" width="180"></vxe-column>
+                <vxe-column field="ASIN" title="ASIN" width="140"></vxe-column>
+                <vxe-column field="seller" title="seller" width="220"></vxe-column>
+                <vxe-column field="developer" title="developer" width="200">
                 </vxe-column>
                 <vxe-colgroup field="all_sum" title="all_sum">
                     <vxe-column field="sale_amount" title="sale_amount" width="240" sortable></vxe-column>
@@ -42,32 +42,13 @@
                 tableBorder: "false",
                 isFullScreen: false,
                 tableHeight: 660,
-                formData: {
-                    id: 0,
-                    account: "",
-                    product: "",
-                    SKU: "",
-                    ASIN: "",
-                    seller: "",
-                    developer: "",
-                    sale_amount: 0,
-                    order_amount: 0,
-                },
             };
         },
         watch: {
             isFullScreen(newV, oldV) {
                 this.$nextTick(() => {
                     let el = document.querySelector(".contain");
-                    if (newV) {
-                        this.fullscreen(el);
-                        document.querySelector('.fullscreen-btn i').setAttribute('class', 'vxe-button--icon vxe-icon--zoomout');
-                        el.setAttribute('class', el.getAttribute('class') + ' contain-fullscreen');
-                    } else {
-                        this.notFullscreen(document);
-                        document.querySelector('.fullscreen-btn i').setAttribute('class', 'vxe-button--icon vxe-icon--zoomin');
-                        el.setAttribute('class', el.getAttribute('class').split(' ').slice(0, -1).join(' '));
-                    }
+                    this.elFullscreen(el,newV)
                 });
             },
         },
@@ -87,12 +68,11 @@
                 };
             });
             this.loading = false;
-            this.$nextTick(()=> {
+            this.$nextTick(() => {
                 this.$refs.mytable.connect(this.$refs.xToolbar);
             });
         },
-        mounted() {
-        },
+        mounted() { },
         methods: {
             // 全屏
             fullscreen(el) {
@@ -116,6 +96,27 @@
                     el.mozCancelFullScreen();
                 } else if (el.webkitExitFullscreen) {
                     el.webkitExitFullscreen();
+                }
+            },
+            elFullscreen(el, newV) {
+                if (newV) {
+                    this.fullscreen(el);
+                    document
+                        .querySelector(".fullscreen-btn i")
+                        .setAttribute("class", "vxe-button--icon vxe-icon--zoomout");
+                    el.setAttribute(
+                        "class",
+                        el.getAttribute("class") + " contain-fullscreen"
+                    );
+                } else {
+                    this.notFullscreen(document);
+                    document
+                        .querySelector(".fullscreen-btn i")
+                        .setAttribute("class", "vxe-button--icon vxe-icon--zoomin");
+                    el.setAttribute(
+                        "class",
+                        el.getAttribute("class").split(" ").slice(0, -1).join(" ")
+                    );
                 }
             },
         },
