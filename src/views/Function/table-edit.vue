@@ -8,16 +8,22 @@
                     <vxe-button @click="editRowEvent($refs.xTable.getCheckboxRecords()[0])">Edit</vxe-button>
                     <vxe-button @click="deleteRowEvent">Delete</vxe-button>
                     <vxe-button>Edit All</vxe-button>
+                    <vxe-button @click="saveAllRowEvent">Save All</vxe-button>
                     <vxe-button @click="deleteRowEvent(null)">Delete All</vxe-button>
                 </template>
                 <template #tools></template>
             </vxe-toolbar>
             <vxe-table ref="xTable" stripe :border="tableConfig.border" align="center" :loading="tableConfig.loading"
                 :height="tableConfig.height" highlight-current-row highlight-hover-row :data="tableData" keep-source
-                :edit-config="{ trigger: 'click', mode: 'row' ,autoClear: false,showUpdateStatus: true, showInsertStatus: true}">
+                :edit-config="{
+          trigger: 'click',
+          mode: 'row',
+          showUpdateStatus: true,
+          showInsertStatus: true,
+        }">
                 <vxe-column type="seq" width="160" fixed="left"></vxe-column>
                 <vxe-column type="checkbox" width="160" fixed="left"></vxe-column>
-                <div v-for="(col,i) in tableConfig.column" :key="i">
+                <div v-for="(col, i) in tableConfig.column" :key="i">
                     <vxe-column :field="col.field" :title="col.title" :width="col.width" :edit-render="col.editConfig">
                     </vxe-column>
                 </div>
@@ -41,7 +47,7 @@
                 <template #default>
                     <vxe-form :data="formData" :rules="formRules" title-align="right" title-width="100"
                         @submit="submitEvent">
-                        <div v-for="(formItem,i) in tableConfig.column" :key="i">
+                        <div v-for="(formItem, i) in tableConfig.column" :key="i">
                             <vxe-form-item :title="formItem.title" field="formItem.field" span="12"
                                 :item-render="formItem.editConfig"></vxe-form-item>
                         </div>
@@ -67,13 +73,64 @@
                     border: "false",
                     height: 660,
                     column: [
-                        { field: 'name', title: 'name', width: '250', editConfig: { name: 'input', attrs: { type: 'text', placeholder: '请输入昵称' } } },
-                        { field: 'age', title: 'age', width: '250', editConfig: { name: 'input', attrs: { type: 'number', placeholder: '请输入年龄' } } },
-                        { field: 'sex', title: 'sex', width: '250', editConfig: { name: '$select', options: [{ label: '男', value: '1' }, { label: '女', value: '0' }] } },
-                        { field: 'birthday', title: 'birthday', width: '250', editConfig: { name: '$input', props: { type: 'date', placeholder: '请选择日期' } } },
-                        { field: 'deposit', title: 'deposit', width: '250', editConfig: { name: '$input', props: { type: 'float', digits: 2 } } },
-                        { field: 'introduce', title: 'introduce', width: '250', editConfig: { name: 'textarea', attrs: { placeholder: '请输入个人简介', default: '本人很懒，暂无简介' } } }
-                    ]
+                        {
+                            field: "name",
+                            title: "name",
+                            width: "250",
+                            editConfig: {
+                                name: "input",
+                                attrs: { type: "text", placeholder: "请输入昵称" },
+                            },
+                        },
+                        {
+                            field: "age",
+                            title: "age",
+                            width: "250",
+                            editConfig: {
+                                name: "input",
+                                attrs: { type: "number", placeholder: "请输入年龄" },
+                            },
+                        },
+                        {
+                            field: "sex",
+                            title: "sex",
+                            width: "250",
+                            editConfig: {
+                                name: "$select",
+                                options: [
+                                    { label: "男", value: "1" },
+                                    { label: "女", value: "0" },
+                                ],
+                            },
+                        },
+                        {
+                            field: "birthday",
+                            title: "birthday",
+                            width: "250",
+                            editConfig: {
+                                name: "$input",
+                                props: { type: "date", placeholder: "请选择日期" },
+                            },
+                        },
+                        {
+                            field: "deposit",
+                            title: "deposit",
+                            width: "250",
+                            editConfig: { name: "$input", props: { type: "float", digits: 2 } },
+                        },
+                        {
+                            field: "introduce",
+                            title: "introduce",
+                            width: "250",
+                            editConfig: {
+                                name: "textarea",
+                                attrs: {
+                                    placeholder: "请输入个人简介",
+                                    default: "本人很懒，暂无简介",
+                                },
+                            },
+                        },
+                    ],
                 },
                 tableData: [],
                 showEdit: false,
@@ -86,18 +143,26 @@
                 let index = i + 1;
                 return {
                     id: index,
-                    name: 'user' + index,
+                    name: "user" + index,
                     age: 18,
                     sex: Math.round(Math.random()),
-                    birthday: Number((Math.random() * 40).toFixed(0)) + 1970 + '-' + (Math.random() * 13).toFixed(0) + '-' + (Math.random() * 29).toFixed(0),
+                    birthday:
+                        Number((Math.random() * 40).toFixed(0)) +
+                        1970 +
+                        "-" +
+                        (Math.random() * 13).toFixed(0) +
+                        "-" +
+                        (Math.random() * 29).toFixed(0),
                     deposit: Number((Math.random() * 1000000).toFixed(2)),
-                    introduce: '本人很懒，暂无简介'
+                    introduce: "本人很懒，暂无简介",
                 };
             });
-            this.tableData.map(e => {
+            this.tableData.map((e) => {
                 // new Date(e.birthday).getFullYear() : 月份12时会错误
-                e.age = Number(new Date().getFullYear() - Number(e.birthday.split('-')[0]))
-            })
+                e.age = Number(
+                    new Date().getFullYear() - Number(e.birthday.split("-")[0])
+                );
+            });
             this.tableConfig.loading = false;
             this.$nextTick(() => {
                 this.$refs.xTable.connect(this.$refs.xToolbar);
@@ -106,34 +171,42 @@
         mounted() { },
         methods: {
             optMessage() {
-                const $table = this.$refs.xTable
+                const $table = this.$refs.xTable;
                 //getRecordset():{insertRecords[],removeRecords[],updateRecords[]}
-                const { insertRecords, removeRecords, updateRecords } = $table.getRecordset();
-                const msg = '新增' + insertRecords.length + '条数据，删除了' + removeRecords.filter(e => !e.$event).length + '条数据，更改了' + updateRecords.length + '条数据'
+                const { insertRecords, removeRecords, updateRecords } =
+                    $table.getRecordset();
+                const msg =
+                    "新增" +
+                    insertRecords.length +
+                    "条数据，删除了" +
+                    removeRecords.filter((e) => !e.$event).length +
+                    "条数据，更改了" +
+                    updateRecords.length +
+                    "条数据";
                 // console.log(insertRecords)
                 // updateRecords.map(e=>{
                 //     console.log(e.$event)
                 // })
                 this.$message({
-                    message: msg
-                })
+                    message: msg,
+                });
             },
             // delete
             deleteRowEvent(row) {
-                console.log(row)
-                const $table = this.$refs.xTable
+                console.log(row);
+                const $table = this.$refs.xTable;
                 // 删除当前行或者删除选中行或者清空数据
-                // getCheckboxRecords(isFull) 
-                $table.removeCheckboxRow() && $table.remove(row)
+                // getCheckboxRecords(isFull)
+                $table.removeCheckboxRow() && $table.remove(row);
                 // this.$message({
                 //     // 获取删除的数据
                 //     message: '删除数据:--'+JSON.stringify($table.getRemoveRecords())
                 // })
-                this.optMessage()
+                this.optMessage();
             },
             // edit active
             editRowEvent(row) {
-                console.log(row)
+                console.log(row);
                 const $table = this.$refs.xTable;
                 $table.setActiveRow(row);
             },
@@ -151,7 +224,7 @@
                 //     // 获取修改的数据 ，只对 keep-source 开启有效，还原指定行 row 或者整个表格的数据
                 //     message: '修改数据:--'+JSON.stringify($table.getUpdateRecords())
                 // })
-                this.optMessage();
+                // this.optMessage();
             },
             // cancel edit
             cancelRowEvent(row) {
@@ -160,6 +233,37 @@
                     // 还原行数据 ，只对 keep-source 开启有效，还原指定行 row 或者整个表格的数据
                     $table.revertData(row);
                 });
+            },
+            // save all
+            async saveAllRowEvent() {
+                const $table = this.$refs.xTable;
+                const { insertRecords, removeRecords, updateRecords } =
+                    $table.getRecordset();
+                if (
+                    insertRecords.length <= 0 &&
+                    removeRecords.length <= 0 &&
+                    updateRecords.length <= 0
+                ) {
+                    this.$XModal.message({ content: "数据未改动！", status: "warning" });
+                    return;
+                }
+                const errMap = await $table.validate().catch((errMap) => errMap);
+                if (errMap) {
+                    return;
+                }
+                this.tableConfig.loading = true;
+                console.log(updateRecords);
+                console.log(JSON.stringify($table.getUpdateRecords()));
+                // 这里如果是API提交数据可以重新请求数据直接去掉标记
+                // 合并数据
+                Object.assign(this.tableData, $table.getUpdateRecords());
+                console.log(this.tableData);
+                // 去掉编辑的标记
+                const tdDoms = document.querySelectorAll('td')
+                for(let e of tdDoms){
+                    e.setAttribute('class',e.getAttribute('class').split(' ').slice(0,-1).join(' '))
+                }
+                this.tableConfig.loading = false;
             },
         },
     };

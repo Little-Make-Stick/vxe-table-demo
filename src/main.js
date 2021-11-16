@@ -14,10 +14,11 @@ import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/swiper-bundle.css'
 Vue.use(VueAwesomeSwiper, /* { default options with global component } */)
 
-import 'xe-utils'
+import XEUtils from 'xe-utils'
 import VXETable from 'vxe-table'
 import 'vxe-table/lib/style.css'
 Vue.use(VXETable);
+Vue.use(XEUtils);
 
 import router from './router'
 new Vue({

@@ -32,6 +32,10 @@ const routes = [
         component: () => import('../views/Function/fullscreen.vue')
       },
       {
+        path: 'function/show-col',
+        component: () => import('../views/Function/show-col.vue')
+      },
+      {
         path: 'function/filtercol',
         component: () => import('../views/Function/filtercol.vue')
       },

@@ -25,11 +25,12 @@
           <el-menu-item index="/roll-table">Roll Table DEMO</el-menu-item>
         </el-submenu>
         <el-submenu index="4">
-          <template slot="title">
+          <template slot="title">  
             <i class="el-icon-s-management"></i>
             <span slot="title">Table Function</span>
           </template>
           <el-menu-item index="/function/fullscreen">Fullscreen</el-menu-item>
+          <el-menu-item index="/function/show-col">Show Cols</el-menu-item>
           <el-menu-item index="/function/filtercol">Filter Col</el-menu-item>
           <el-menu-item index="/function/tooltip">Tool Tip</el-menu-item>
           <el-menu-item index="/function/scroll-to-row">Sroll To Row</el-menu-item>
