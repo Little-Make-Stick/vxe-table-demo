@@ -20,9 +20,10 @@
         <el-submenu index="3">
           <template slot="title">
             <i class="el-icon-magic-stick"></i>
-            <span slot="title">Roll Table</span>
+            <span slot="title">Work</span>
           </template>
           <el-menu-item index="/roll-table">Roll Table DEMO</el-menu-item>
+          <el-menu-item index="/table-show-cols">Table Show Cols</el-menu-item>
         </el-submenu>
         <el-submenu index="4">
           <template slot="title">  

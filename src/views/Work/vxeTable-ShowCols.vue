@@ -36,25 +36,30 @@
                 <el-form :model="colsForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                     <el-form-item label="字段" prop="cols">
                         <el-checkbox-group v-model="colsForm.cols">
-                            <div v-for="(item, i) in tableThGroupsColumns" :key="i">
-
+                            <div v-for="(item, i) in tableThGroupsColumns" :key="i" >
                                 <template v-if="item.children">
-                                    <el-checkbox v-if="item.title" :label="item.id" name="cols" v-model="item.visible"
-                                        :checked="item.visible" @change="colChange">{{item.title}}</el-checkbox>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" v-if="item.title" :label="item.id" name="cols"
+                                            v-model="item.visible" :checked="item.visible"
+                                            @change="colChange($event)" />{{item.title }}
+                                    </div>
                                     <el-checkbox-group v-model="colsForm.cols">
                                         <div v-for="(child, j) in item.children" :key="j" class="child-checkbox">
-                                            <el-checkbox :label="child.id" name="cols" v-model="child.visible"
-                                                :checked="child.visible" @change="colChange">
-                                                {{item.title}}-{{child.title}}</el-checkbox>
+                                            <div class="checkbox-item">
+                                                <input type="checkbox" :label="child.id" name="cols" v-model="child.visible"
+                                                :checked="child.visible" @change="colChange($event)" />
+                                                {{ item.title }}-{{ child.title }}
+                                            </div>
                                         </div>
                                     </el-checkbox-group>
                                 </template>
 
                                 <template v-else>
-                                    <el-checkbox v-if="item.title" :label="item.id" name="cols" v-model="item.visible"
-                                        :checked="item.visible" @change="colChange">{{item.title}}</el-checkbox>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" v-if="item.title" :label="item.id" name="cols"
+                                        v-model="item.visible" :checked="item.visible" @change="colChange($event)" />{{item.title }}
+                                    </div>
                                 </template>
-
                             </div>
                         </el-checkbox-group>
                     </el-form-item>
@@ -108,7 +113,7 @@
         },
         mounted() { },
         methods: {
-            initColumns(){
+            initColumns() {
                 let cols = this.$refs.mytable.getTableColumn();
                 XEUtils.each(cols, (item, key) => {
                     if (key == "fullColumn") {
@@ -119,35 +124,37 @@
                     }
                 });
             },
-            colChange(val, e) {
-                let colId = e.target.value;
+            colChange(e) {
+                let val = e.target.checked;
+                let colId = e.target.getAttribute("label");
                 let col = this.$refs.mytable.getColumnById(colId);
-                let parentCol = col.parentId ? this.$refs.mytable.getColumnById(col.parentId) : null;
-                if(!col.children){
+                let parentCol = col.parentId
+                    ? this.$refs.mytable.getColumnById(col.parentId)
+                    : null;
+                if (!col.children) {
                     if (val) this.$refs.mytable.showColumn(col);
                     else this.$refs.mytable.hideColumn(col);
                 }
-                if (col.children && !val) {
-                    XEUtils.each(col.children, (item, key) => {
-                        this.$refs.mytable.hideColumn(item);
-                        console.log(document.querySelector(`[value=${item.id}]`))
-                        this.$nextTick(()=>{
-                            document.querySelector(`[value=${item.id}]`).checked = false;
-                        })
-                    })
-                } 
-                if(parentCol && !val){
+                if (col.children) {
+                    if (!val) {
+                        XEUtils.each(col.children, (item, key) => {
+                            this.$refs.mytable.hideColumn(item);
+                        });
+                    } else {
+                        XEUtils.each(col.children, (item, key) => {
+                            this.$refs.mytable.showColumn(item);
+                        });
+                    }
+                }
+                if (parentCol && !val) {
                     this.$refs.mytable.hideColumn(parentCol);
                     XEUtils.each(parentCol.children, (item, key) => {
-                        console.log(item.visible)
-                        if(item.visible){
+                        if (item.visible) {
                             this.$refs.mytable.showColumn(parentCol);
-                            console.log(parentCol)
                         }
-                    })
+                    });
                 }
                 this.initColumns();
-                console.log(this.tableThGroupsColumns)
             },
             adjustColsEvent() {
                 this.isAdjustColsDialog = false;
@@ -202,5 +209,25 @@
 
     .vxe-cell button {
         height: 18px;
+    }
+
+    input[type="checkbox"] {
+        width: 18px;
+        margin-right: 8px;
+        height: 16px;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+    }
+
+    input[type="checkbox"]:checked{
+        background-color: #409eff;
+    }
+
+    input[type="checkbox"]:focus-visible{
+        border: none;
+        outline: none;
     }
 </style>

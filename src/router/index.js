@@ -13,7 +13,11 @@ const routes = [
     children:[
       {
         path: 'roll-table',
-        component: () => import('../views/Roll/vxeTable-Roll.vue')
+        component: () => import('../views/Work/vxeTable-Roll.vue')
+      },
+      {
+        path: 'table-show-cols',
+        component: () => import('../views/Work/vxeTable-ShowCols.vue')
       },
       {
         path: 'base-table',
